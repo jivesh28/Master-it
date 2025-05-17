@@ -1,5 +1,5 @@
 import mongoose, { Document, Schema } from "mongoose";
-import { IField } from './Fields'
+import { IField } from './Field'
 
 export interface INiche extends Document {
   name: string;
