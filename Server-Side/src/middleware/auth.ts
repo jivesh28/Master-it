@@ -9,11 +9,12 @@ export const isAuthenticated = (
   req: AuthenticatedRequest,
   res: Response,
   next: NextFunction
-) => {
+): void => {
   const token = req.headers.authorization?.split(" ")[1];
 
   if (!token) {
-    return res.status(401).json({ message: "No token provided" });
+    res.status(401).json({ message: "No token provided" });
+    return;
   }
 
   try {
@@ -24,7 +25,7 @@ export const isAuthenticated = (
     req.user = decoded;
     next();
   } catch (err) {
-    return res.status(401).json({ message: "Invalid token" });
+    res.status(401).json({ message: "Invalid token" });
   }
 };
 
@@ -32,13 +33,15 @@ export const isAdmin = (
   req: AuthenticatedRequest,
   res: Response,
   next: NextFunction
-) => {
+): void => {
   if (!req.user) {
-    return res.status(401).json({ message: "Not authenticated" });
+    res.status(401).json({ message: "Not authenticated" });
+    return;
   }
 
   if (req.user.role !== "admin") {
-    return res.status(403).json({ message: "Access denied" });
+    res.status(403).json({ message: "Access denied" });
+    return;
   }
 
   next();

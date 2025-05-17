@@ -20,3 +20,46 @@ export const createNiche = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Error creating niche" });
   }
 };
+
+
+import { AuthenticatedRequest } from "../middleware/auth";
+
+
+export const updateNiche = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const { name, description, fieldId } = req.body;
+
+    const updated = await Niche.findByIdAndUpdate(
+      id,
+      { name, description, field: fieldId },
+      { new: true }
+    );
+
+    if (!updated) {
+      res.status(404).json({ message: "Niche not found" });
+      return;
+    }
+
+    res.status(200).json(updated);
+  } catch (err) {
+    res.status(500).json({ message: "Failed to update niche" });
+  }
+};
+
+
+export const deleteNiche = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const deleted = await Niche.findByIdAndDelete(id);
+
+    if (!deleted) {
+      res.status(404).json({ message: "Niche not found" });
+      return;
+    }
+
+    res.status(200).json({ message: "Niche deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to delete niche" });
+  }
+};
